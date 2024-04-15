@@ -49,6 +49,27 @@ a {
 /* ... your code here ... */
 
 
+.header__image {
+  width: max(50px, 5vw);
+  padding: 0.4rem;
+}
+
+#latitudeTag {
+  display: block;
+}
+#longitudeTag {
+  display: block;
+}
+#name {
+  display: block;
+}
+
+#hashtag {
+  display: block;
+}
+
+
+
 /* Grid styles (no changes required) */
 
 .row {
@@ -110,26 +131,52 @@ a {
 /* ### TODO ### Styles for Header Component */
 
 /* ... your code here ... */
+header {
+  background-color: #e8f3db;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
 
 
 /* ### TODO ### Styles for Main Component */
 
 /* ... your code here ... */
+.main {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+}
 
 
 /* ### TODO ### Styles for Tagging component */
 
 /* ... your code here ... */
+#tag-form {
+  grid-column-start: 1;
+  flex-direction: column;
+}
 
 
 /* ### TODO ### Styles for Discovery component */
 
 /* ... your code here ... */
+.discovery__search {
+  grid-column-start: 2;
+}
 
 
 /* ### TODO ### Styles for Footer Component */
 
 /* ... your code here ... */
+footer {
+  background-color: #e8f3db;
+  padding: 20px;
+  display: flex;
+  align-items: flex-end;
+
+}
 
 
 /* ### TODO ### Media Queries */
