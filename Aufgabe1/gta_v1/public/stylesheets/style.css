@@ -24,7 +24,7 @@ html {
 /* Variables (example: see declaration for "a" below) */
 
 :root {
-  --link-color: #00B7FF;
+  --link-color: #052c14;
   --background-color: #efefef;
   --border-color: #cdcdcd;
   --gray-color: #666;
@@ -35,9 +35,8 @@ html {
 
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  display: flex;
-  flex-direction: row;
   min-height: 100vh;
+
 }
 
 a {
@@ -50,6 +49,17 @@ a {
 .header__image {
   height: 50px;
   width: auto;
+  padding-left: 20px;
+}
+
+.header__navigation {
+  padding-right: 20px;
+  color: black;
+}
+
+.header__navigation > a:hover{
+  background-color: rgb(66, 141, 91);
+  color: rgb(240, 240, 240) !important;
 }
 
 /* Grid styles (no changes required) */
@@ -109,35 +119,11 @@ a {
   width: calc(100% - 1rem);
 }
 
-.flex-container {
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-.main {
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  
-}
-
-
-
 /* ### TODO ### Styles for Header Component */
 
 /* ... your code here ... */
 .header {
-  background-color:aquamarine;
+  background-color:rgb(91, 204, 128);
   height: 100px;
   display: block;
   align-items: center;
@@ -149,21 +135,91 @@ a {
 /* ### TODO ### Styles for Main Component */
 
 /* ... your code here ... */
+.flex-container {
 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  list-style: none;
+}
+.main {
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding-left: 50px;
+  padding-right: 50px;
+  margin: 0;
+  list-style: none;
+  
+}
 
 /* ### TODO ### Styles for Tagging component */
 
-/* ... your code here ... */
+.main__tagging {
+  padding: 20px;
+  
+}
+
+#tag-form > fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+}
 
 
 /* ### TODO ### Styles for Discovery component */
 
 /* ... your code here ... */
+.main__discovery {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 4;
+  max-width: 1000px;
+}
 
+.discovery__wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 40px;
+}
+
+#discoveryFilterForm > fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+}
+
+#searchterm {
+  max-width: 300px;
+}
+
+.discovery__search > fieldset > button {
+  max-width: 300px;
+}
+
+.discovery__results > li {
+  border: #052c14;
+  border-width: 1px;
+  background-color: #cdcdcd;
+}
 
 /* ### TODO ### Styles for Footer Component */
 
-/* ... your code here ... */
+.footer {
+  background-color:rgb(91, 204, 128);
+  height: 80px;
+  text-align: left;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
 
 
 /* ### TODO ### Media Queries */
