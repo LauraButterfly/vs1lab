@@ -54,19 +54,7 @@ a {
   padding: 0.4rem;
 }
 
-#latitudeTag {
-  display: block;
-}
-#longitudeTag {
-  display: block;
-}
-#name {
-  display: block;
-}
 
-#hashtag {
-  display: block;
-}
 
 
 
@@ -144,26 +132,86 @@ header {
 
 /* ... your code here ... */
 .main {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-wrap: wrap;
 
-}
+} 
 
 
 /* ### TODO ### Styles for Tagging component */
 
 /* ... your code here ... */
-#tag-form {
-  grid-column-start: 1;
-  flex-direction: column;
+.tagging {
+  width: calc(25% - 1rem); /* Entspricht Breite von 3 Spalten */
+  padding: 1rem;
+  
+  
 }
+
+.tagging input[type="text"]{
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.tagging label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+ .tagging form {
+  
+} 
+
 
 
 /* ### TODO ### Styles for Discovery component */
 
 /* ... your code here ... */
-.discovery__search {
-  grid-column-start: 2;
+
+.discovery__wrapper {
+  display: grid;
+  grid-template-columns: 1fr 2fr; 
+  grid-template-areas: "results map"; 
+}
+.discovery {
+  width: calc(75% - 1rem); /* Entspricht Breite von 9 Spalten */
+  padding: 1rem;
+  
+  border-radius: 10px;
+  height: 300px;
+}
+
+.discovery input[type="text"] {
+  display: block;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.discovery__search button {
+  
+}
+
+.discovery__results {
+  grid-area: results; 
+}
+
+.discovery__map {
+  grid-area: map; 
+}
+
+.discovery__results li {
+  list-style-type: none;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #666;
+  background-color: #e8f3db;
 }
 
 
@@ -173,12 +221,18 @@ header {
 footer {
   background-color: #e8f3db;
   padding: 20px;
-  display: flex;
-  align-items: flex-end;
+  width: 100%;;
+  margin-top: auto;
 
 }
 
 
 /* ### TODO ### Media Queries */
+
+@media screen and (max-width: 850px) {
+  .tagging, .discovery {
+    width: 100%;
+  }
+}
 
 /* ... your code here ... */
