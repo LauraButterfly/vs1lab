@@ -58,7 +58,7 @@ a {
 }
 
 .header__navigation > a:hover{
-  background-color: rgb(66, 141, 91);
+  background-color: rgb(68, 160, 99);
   color: rgb(240, 240, 240) !important;
 }
 
@@ -146,8 +146,8 @@ a {
 
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  justify-content: center;
+  
   padding-left: 50px;
   padding-right: 50px;
   margin: 0;
@@ -169,6 +169,10 @@ a {
   padding: 10px;
 }
 
+#tag-form > fieldset > input{
+  padding: 10px;
+}
+
 
 /* ### TODO ### Styles for Discovery component */
 
@@ -184,7 +188,7 @@ a {
 .discovery__wrapper {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   padding: 40px;
 }
 
@@ -192,7 +196,11 @@ a {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding: 5px;
+  padding: 10px;
+}
+
+#discoveryFilterForm > fieldset > input {
+  padding: 4px;
 }
 
 #searchterm {
@@ -201,13 +209,23 @@ a {
 
 .discovery__search > fieldset > button {
   max-width: 300px;
+  padding: 5px;
 }
 
 .discovery__results > li {
+  border-style: solid !important;
   border: #052c14;
   border-width: 1px;
-  background-color: #cdcdcd;
+  padding: 10px;
+  margin: 10px;
+  margin-right: 20px;
+  background-color:rgb(148, 224, 174);
+  align-items: flex-start;
+  min-width: 241px;
+  color:#000000;
 }
+
+
 
 /* ### TODO ### Styles for Footer Component */
 
@@ -220,8 +238,50 @@ a {
   width: 100%;
 }
 
+.footer > span {
+  padding-left: 20px;
+  position: absolute;
+  bottom: 50%;
+}
+
 
 
 /* ### TODO ### Media Queries */
 
-/* ... your code here ... */
+@media screen and (max-width: 850px) {
+  .main {
+    flex-direction: column;
+    width: 100% !important;
+    align-items: center;
+  }
+
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .main__discovery {
+    align-items: center;
+  }
+
+  .discovery__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 40px;
+  }
+  
+  #tag-form > fieldset > input {
+    max-width: 300px;
+  }
+  #tag-form > fieldset > button {
+    max-width: 300px;
+  }
+
+  .discovery__map > img {
+    padding-top: 20px;
+  }
+
+}
