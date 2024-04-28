@@ -125,7 +125,7 @@ a {
 .header {
   background-color:rgb(91, 204, 128);
   height: 100px;
-  /* display: block; */
+  display: block;
   align-items: center;
   display: flex;
   width: 100%;
@@ -154,7 +154,8 @@ a {
 /* ### TODO ### Styles for Tagging component */
 
 .main__tagging {
-  padding: 20px 10px 10px 10px;
+  padding: 10px;
+  padding-top: 20px;
   min-width: fit-content;
   width: 300px;
 }
@@ -250,21 +251,17 @@ a {
 .footer {
   background-color:rgb(91, 204, 128);
   height: 80px;
-  /* text-align: left; */
+  text-align: left;
   position: absolute;
-  display: flex;
-  padding-left: 20px;
-  justify-content: left;
-  align-items: center;
   bottom: 0;
   width: 100%;
 }
 
-/* .footer > span {
+.footer > span {
   padding-left: 20px;
   position: absolute;
   bottom: 50%;
-} */
+}
 
 
 
