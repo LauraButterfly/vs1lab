@@ -31,7 +31,7 @@
                     <legend>Add a new GeoTag</legend> 
                     <label for="latitudeTag">Latitude:</label><input id="latitudeTag" type="text" placeholder="49.01379" readonly>
                     <label for="longitudeTag">Longitude:</label><input id="longitudeTag" type="text" placeholder="8.390071" readonly>
-                    <label for="name">Name:</label><input id="name" type="text" placeholder="e.g. Central Berlin" maxlength="10" required>
+                    <label for="name">Name:</label><input id="name" type="text" placeholder="e.g. Central Berlin" maxlength="10" pattern = "[a-zA-Z]*" required>
                     <label for="hashtag">Hashtag:</label><input id="hashtag" type="text" placeholder="e.g. #ber" pattern="#([a-zA-Z]{1,10})">
                     <button type="submit">Add Tag</button>
                 </fieldset>
