@@ -30,6 +30,16 @@ class LocationHelper {
     }
 
     /**
+     * Create LocationHelper instance if coordinates are known.
+     * @param {string} latitude 
+     * @param {string} longitude 
+     */
+    constructor(latitude, longitude) {
+        this.#latitude = (parseFloat(latitude)).toFixed(5);
+        this.#longitude = (parseFloat(longitude)).toFixed(5);
+    }
+
+    /**
      * The 'findLocation' method requests the current location details through the geolocation API.
      * It is a static method that should be used to obtain an instance of LocationHelper.
      * Throws an exception if the geolocation API is not available.
@@ -48,9 +58,7 @@ class LocationHelper {
         // These callbacks are given as arrow function expressions.
         geoLocationApi.getCurrentPosition((location) => {
             // Create and initialize LocationHelper object.
-            let helper = new LocationHelper();
-            helper.#latitude = location.coords.latitude.toFixed(5);
-            helper.#longitude = location.coords.longitude.toFixed(5);
+            let helper = new LocationHelper(location.coords.latitude, location.coords.longitude);
             // Pass the locationHelper object to the callback.
             callback(helper);
         }, (error) => {
@@ -63,37 +71,44 @@ class LocationHelper {
  * A class to help using the MapQuest map service.
  */
 class MapManager {
-    #apiKey = '';
+
+    #map
+    #markers
 
     /**
-     * Create a new MapManager instance.
-     * @param {string} apiKey Your MapQuest API Key
-     */
-    constructor(apiKey) {
-        this.#apiKey = apiKey;
+    * Initialize a Leaflet map
+    * @param {number} latitude The map center latitude
+    * @param {number} longitude The map center longitude
+    * @param {number} zoom The map zoom, defaults to 18
+    */
+    initMap(latitude, longitude, zoom = 18) {
+        // set up dynamic Leaflet map
+        this.#map = L.map('map').setView([latitude, longitude], zoom);
+        var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; ' + mapLink + ' Contributors'
+        }).addTo(this.#map);
+        this.#markers = L.layerGroup().addTo(this.#map);
     }
 
     /**
-     * Generate a MapQuest image URL for the specified parameters.
-     * @param {number} latitude The map center latitude
-     * @param {number} longitude The map center longitude
-     * @param {{latitude, longitude, name}[]} tags The map tags, defaults to just the current location
-     * @param {number} zoom The map zoom, defaults to 10
-     * @returns {string} URL of generated map
-     */
-    getMapUrl(latitude, longitude, tags = [], zoom = 10) {
-        if (this.#apiKey === '') {
-            console.log("No API key provided.");
-            return "images/mapview.jpg";
+    * Update the Markers of a Leaflet map
+    * @param {number} latitude The map center latitude
+    * @param {number} longitude The map center longitude
+    * @param {{latitude, longitude, name}[]} tags The map tags, defaults to just the current location
+    */
+    updateMarkers(latitude, longitude, tags = []) {
+        // delete all markers
+        this.#markers.clearLayers();
+        L.marker([latitude, longitude])
+            .bindPopup("Your Location")
+            .addTo(this.#markers);
+        for (const tag of tags) {
+            L.marker([tag.location.latitude, tag.location.longitude])
+                .bindPopup(tag.name)
+                .addTo(this.#markers);
         }
-
-        let tagList = `${latitude},${longitude}|marker-start`;
-        tagList += tags.reduce((acc, tag) => `${acc}||${tag.latitude},${tag.longitude}|flag-${tag.name}`, "");
-
-        const mapQuestUrl = `https://www.mapquestapi.com/staticmap/v5/map?key=${this.#apiKey}&size=600,400&zoom=${zoom}&center=${latitude},${longitude}&locations=${tagList}`;
-        console.log("Generated MapQuest URL:", mapQuestUrl);
-
-        return mapQuestUrl;
     }
 }
 
@@ -103,8 +118,37 @@ class MapManager {
  * It is called once the page has been fully loaded.
  */
 // ... your code here ...
+function updateLocation() {
+    LocationHelper.findLocation((helper) => {
+        fillInCurrentLocation(helper);
+        setMapOfCurrentLocation(helper);
+    });
+}
+
+function setMapOfCurrentLocation(helper) {
+    const manager = new MapManager();
+    manager.initMap(helper.latitude, helper.longitude);
+    manager.updateMarkers(helper.latitude, helper.longitude);
+    const imageElement = document.getElementById("mapView");
+    imageElement.parentNode.removeChild(imageElement);
+    
+}
+
+function fillInCurrentLocation(helper) {
+    setValueById("longitudeTag", helper.longitude)
+    setValueById("latitudeTag", helper.latitude)
+    setValueById("longitudeDis", helper.longitude)
+    setValueById("latitudeDis", helper.latitude)
+}
+
+function setValueById(id, value) {
+    const inputElement = document.getElementById(id);
+    inputElement.value = value;
+}
 
 // Wait for the page to fully load its DOM content, then call updateLocation
 document.addEventListener("DOMContentLoaded", () => {
-    alert("Please change the script 'geotagging.js'");
+    //alert("Please change the script 'geotagging.js'");
+    updateLocation();
 });
+
