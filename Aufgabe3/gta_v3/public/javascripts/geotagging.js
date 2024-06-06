@@ -17,10 +17,20 @@ console.log("The geoTagging script is going to start...");
  * It is called once the page has been fully loaded.
  */
 function updateLocation() {
-    LocationHelper.findLocation((helper) => {
-        fillInCurrentLocation(helper);
-        setMapOfCurrentLocation(helper);
-    });
+
+    const latitudeTag = document.getElementById("latitudeTag").value;
+    const longitudeTag = document.getElementById("longitudeTag").value;
+    const latitudeDis = document.getElementById("latitudeDis").value;
+    const longitudeDis = document.getElementById("longitudeDis").value;
+
+    if (latitudeTag === "" || longitudeTag === "" || latitudeDis === "" || longitudeDis === "") { //Wenn Koordinaten nicht vorhanden, Geolocation-API aktualisieren
+        LocationHelper.findLocation((helper) => {
+            fillInCurrentLocation(helper);
+            setMapOfCurrentLocation(helper);
+        });
+    } else {
+        updateMap(latitudeTag, longitudeTag);       // Wenn Koordinaten bereits vorhanden, Karte direkt aktualisieren
+    }
 }
 
 function setMapOfCurrentLocation(helper) {
