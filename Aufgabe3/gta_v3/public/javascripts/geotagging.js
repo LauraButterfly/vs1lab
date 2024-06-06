@@ -18,7 +18,7 @@ console.log("The geoTagging script is going to start...");
  */
 function updateLocation() {
 
-    const mapManager = new MapManager(""); //MapQuest API Schlüssel
+    const mapManager = new MapManager("NqMK3QedJtMlFrGZ8yY3F5Nzm6IPvM0K"); //MapQuest API Schlüssel
 
     const latitudeTag = document.getElementById("latitudeTag").value;
     const longitudeTag = document.getElementById("longitudeTag").value;
