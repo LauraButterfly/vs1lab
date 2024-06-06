@@ -131,6 +131,8 @@ function setMapOfCurrentLocation(helper) {
     manager.updateMarkers(helper.latitude, helper.longitude);
     const imageElement = document.getElementById("mapView");
     imageElement.parentNode.removeChild(imageElement);
+    const spanElement = document.getElementById("spanElement");
+    spanElement.parentNode.removeChild(spanElement);
     
 }
 
