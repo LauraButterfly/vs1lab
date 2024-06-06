@@ -18,18 +18,29 @@ console.log("The geoTagging script is going to start...");
  */
 function updateLocation() {
 
+    const mapManager = new MapManager(""); //MapQuest API Schlüssel
+
     const latitudeTag = document.getElementById("latitudeTag").value;
     const longitudeTag = document.getElementById("longitudeTag").value;
     const latitudeDis = document.getElementById("latitudeDis").value;
     const longitudeDis = document.getElementById("longitudeDis").value;
 
+    const tagList = JSON.parse(document.getElementById("mapView").getAttribute("data-tags"));
+    const mapImage = document.getElementById("mapView");
+
     if (latitudeTag === "" || longitudeTag === "" || latitudeDis === "" || longitudeDis === "") { //Wenn Koordinaten nicht vorhanden, Geolocation-API aktualisieren
         LocationHelper.findLocation((helper) => {
             fillInCurrentLocation(helper);
             setMapOfCurrentLocation(helper);
+            const mapUrl = mapManager.getMapUrl(helper.latitude, helper.longitude, tagList);
+            mapImage.src = mapUrl;
+        
         });
     } else {
         updateMap(latitudeTag, longitudeTag);       // Wenn Koordinaten bereits vorhanden, Karte direkt aktualisieren
+        const mapUrl = mapManager.getMapUrl(latitudeTag, longitudeTag, tagList);
+        mapImage.src = mapUrl;
+        
     }
 }
 
