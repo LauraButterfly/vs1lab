@@ -66,7 +66,7 @@ router.post('/tagging', (req, res) => {
   const { name, latitude, longitude, hashtag } = req.body;
   geoTagStore.addGeoTag(name, parseFloat(latitude), parseFloat(longitude), hashtag);
   
-  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 10); // Assuming a radius of 10 km
+  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
   res.render('index', { taglist: nearbyGeoTags });
   
 
@@ -95,9 +95,9 @@ router.post('/discovery', (req, res) => {
 
   let nearbyGeoTags;
   if (searchterm) {
-    nearbyGeoTags = geoTagStore.searchNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), searchterm, 100); // Assuming a radius of 100 km
+    nearbyGeoTags = geoTagStore.searchNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), searchterm, 100); 
   } else {
-    nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); // Assuming a radius of 100 km
+    nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
   }
 
   res.render('index', { taglist: nearbyGeoTags });
