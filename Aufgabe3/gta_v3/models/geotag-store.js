@@ -47,6 +47,15 @@ class InMemoryGeoTagStore{
 
     searchNearbyGeoTags(latitude, longitude, keyword, radius) {
 
+        const nerabyTags = this.getNearbyGeoTags(latitude, longitude, radius);
+        const matchingTags = nerabyTags.filter(tag => {
+            const nameMatches = tag.name.toLowerCase().includes(keyword.toLowerCase());
+            const hashtagMatches = tag.hashtag.toLowerCase().includes(keyword.toLowerCase());
+            return nameMatches || hashtagMatches;
+        })
+
+        return matchingTags;
+
     }
 
     _calculateDistance(lat1, lon1, lat2, lon2) {
