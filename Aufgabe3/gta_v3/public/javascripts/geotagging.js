@@ -31,26 +31,15 @@ function updateLocation() {
     if (latitudeTag === "" || longitudeTag === "" || latitudeDis === "" || longitudeDis === "") { //Wenn Koordinaten nicht vorhanden, Geolocation-API aktualisieren
         LocationHelper.findLocation((helper) => {
             fillInCurrentLocation(helper);
-            setMapOfCurrentLocation(helper);
             const mapUrl = mapManager.getMapUrl(helper.latitude, helper.longitude, tagList);
             mapImage.src = mapUrl;
         
         });
-    } else {
-        updateMap(latitudeTag, longitudeTag);       // Wenn Koordinaten bereits vorhanden, Karte direkt aktualisieren
+    } else {                                                                                    // Wenn Koordinaten bereits vorhanden, Karte direkt aktualisieren
         const mapUrl = mapManager.getMapUrl(latitudeTag, longitudeTag, tagList);
         mapImage.src = mapUrl;
         
     }
-}
-
-function setMapOfCurrentLocation(helper) {
-    const manager = new MapManager();
-    manager.initMap(helper.latitude, helper.longitude);
-    manager.updateMarkers(helper.latitude, helper.longitude);
-    const imageElement = document.getElementById("mapView");
-    imageElement.parentNode.removeChild(imageElement);
-    
 }
 
 function fillInCurrentLocation(helper) {
