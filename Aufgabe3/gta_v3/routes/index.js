@@ -43,7 +43,7 @@ const geoTagStore = new GeoTagStore();
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-  res.render('index', { taglist: [] })
+  res.render('index', { taglist: geoTagStore.getTags(), latitude: "", longitude: "" })
 });
 
 /**
@@ -63,13 +63,15 @@ router.get('/', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/tagging', (req, res) => {
-  const { name, latitude, longitude, hashtag } = req.body;
+  const name = req.body.name;
+  const latitude = req.body.latitudeTag;
+  const longitude = req.body.longitudeTag;
+  const hashtag = req.body.hashtag;
+  //const { name, latitude, longitude, hashtag } = req.body;
   geoTagStore.addGeoTag(name, parseFloat(latitude), parseFloat(longitude), hashtag);
   
   const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
-  res.render('index', { taglist: nearbyGeoTags });
-  
-
+  res.render('index', { taglist: nearbyGeoTags, latitude: latitude, longitude: longitude });
 })
 
 /**
@@ -90,8 +92,10 @@ router.post('/tagging', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/discovery', (req, res) => {
-
-  const { latitude, longitude, searchterm } = req.body;
+  const latitude = req.body.latitudeDis;
+  const longitude = req.body.longitudeDis;
+  const searchterm = req.body.searchterm;
+ 
 
   let nearbyGeoTags;
   if (searchterm) {
@@ -100,9 +104,7 @@ router.post('/discovery', (req, res) => {
     nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
   }
 
-  res.render('index', { taglist: nearbyGeoTags });
-
-
-})
+  res.render('index', { taglist: nearbyGeoTags, latitude: latitude, longitude: longitude  });
+});
 
 module.exports = router;
