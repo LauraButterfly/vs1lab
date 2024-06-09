@@ -63,11 +63,7 @@ router.get('/', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/tagging', (req, res) => {
-  const name = req.body.name;
-  const latitude = req.body.latitudeTag;
-  const longitude = req.body.longitudeTag;
-  const hashtag = req.body.hashtag;
-  //const { name, latitude, longitude, hashtag } = req.body;
+  const { name, latitude, longitude, hashtag } = req.body;
   geoTagStore.addGeoTag(name, parseFloat(latitude), parseFloat(longitude), hashtag);
   
   const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
@@ -92,10 +88,7 @@ router.post('/tagging', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/discovery', (req, res) => {
-  const latitude = req.body.latitudeDis;
-  const longitude = req.body.longitudeDis;
-  const searchterm = req.body.searchterm;
- 
+  const {latitude, longitude, searchterm } = req.body;
 
   let nearbyGeoTags;
   if (searchterm) {
