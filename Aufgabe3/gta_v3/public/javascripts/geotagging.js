@@ -10,36 +10,39 @@
 console.log("The geoTagging script is going to start...");
 
 
-
 /**
  * TODO: 'updateLocation'
  * A function to retrieve the current location and update the page.
  * It is called once the page has been fully loaded.
  */
+
 function updateLocation() {
 
-    const mapManager = new MapManager("NqMK3QedJtMlFrGZ8yY3F5Nzm6IPvM0K"); //MapQuest API Schlüssel
+    const latitudeTagVal = document.getElementById("latitudeTag").value;
+    const longitudeTagVal = document.getElementById("longitudeTag").value;
+    const latitudeDisVal = document.getElementById("latitudeDis").value;
+    const longitudeDisVal = document.getElementById("longitudeDis").value;
 
-    const latitudeTag = document.getElementById("latitudeTag").value;
-    const longitudeTag = document.getElementById("longitudeTag").value;
-    const latitudeDis = document.getElementById("latitudeDis").value;
-    const longitudeDis = document.getElementById("longitudeDis").value;
-
-    const tagList = JSON.parse(document.getElementById("mapView").getAttribute("data-tags"));
-    const mapImage = document.getElementById("mapView");
-
-    if (latitudeTag === "" || longitudeTag === "" || latitudeDis === "" || longitudeDis === "") { //Wenn Koordinaten nicht vorhanden, Geolocation-API aktualisieren
+    if(!latitudeTagVal || !longitudeTagVal || !latitudeDisVal || !longitudeDisVal ){
+        console.log("grabbing location")
         LocationHelper.findLocation((helper) => {
             fillInCurrentLocation(helper);
-            const mapUrl = mapManager.getMapUrl(helper.latitude, helper.longitude, tagList);
-            mapImage.src = mapUrl;
-        
+            setMapOfCurrentLocation(helper);
         });
-    } else {                                                                                    // Wenn Koordinaten bereits vorhanden, Karte direkt aktualisieren
-        const mapUrl = mapManager.getMapUrl(latitudeTag, longitudeTag, tagList);
-        mapImage.src = mapUrl;
-        
+        return;
     }
+
+    setMapOfCurrentLocation(helper);
+}
+
+function setMapOfCurrentLocation(helper) {
+    const manager = new MapManager();
+    const tags = JSON.parse(document.getElementById("map").dataset.tags);
+    manager.initMap(helper.latitude, helper.longitude);
+    manager.updateMarkers(helper.latitude, helper.longitude, tags);
+    const imageElement = document.getElementById("mapView");
+    imageElement.parentNode.removeChild(imageElement);
+
 }
 
 function fillInCurrentLocation(helper) {

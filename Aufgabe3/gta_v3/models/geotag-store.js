@@ -1,5 +1,6 @@
 // File origin: VS1LAB A3
-
+const GeoTagExamples = require('./geotag-examples');
+const GeoTag = require('./geotag');
 /**
  * This script is a template for exercise VS1lab/Aufgabe3
  * Complete all TODOs in the code documentation.
@@ -26,7 +27,12 @@
 class InMemoryGeoTagStore{
 
     // TODO: ... your code here ...
-    #geoTags = [];
+    #geoTags = GeoTagExamples.tagList.map(tagDataArray => new GeoTag(tagDataArray[0], tagDataArray[1], tagDataArray[2], tagDataArray[3]));
+
+    getTags(){
+        console.log(this.#geoTags)
+        return this.#geoTags
+    }
 
     addGeoTag(name, latitude, longitude, hashtag){
         this.#geoTags.push(new GeoTag(name, latitude, longitude, hashtag));

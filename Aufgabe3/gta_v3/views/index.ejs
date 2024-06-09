@@ -40,10 +40,10 @@
             <form id="tag-form" action="/tagging" method="post">
                 <fieldset>
                     <legend>Add a new GeoTag</legend> 
-                    <label for="latitudeTag">Latitude:</label><input id="latitudeTag" type="text" value="<%= latitude %>" placeholder="49.01379" readonly>
-                    <label for="longitudeTag">Longitude:</label><input id="longitudeTag" type="text" value="<%= longitude %>" placeholder="8.390071" readonly>
+                    <label for="latitudeTag">Latitude:</label><input id="latitudeTag" type="text" placeholder="49.01379" value="<%= lat %>" readonly>
+                    <label for="longitudeTag">Longitude:</label><input id="longitudeTag" type="text"placeholder="8.390071" value="<%= lon %>" readonly>
                     <label for="name">Name:</label><input id="name" type="text" placeholder="e.g. Central Berlin" maxlength="10" pattern = "[a-zA-Z]*" required>
-                    <label for="hashtag">Hashtag:</label><input id="hashtag" type="text" placeholder="e.g. #ber" pattern="#([a-zA-Z]{1,10})">
+                    <label for="hashtag">Hashtag:</label><input id="hashtag" type="text" placeholder="e.g. #ber" pattern="#([a-zA-Z]{1,10})" required>
                     <button type="submit">Add Tag</button>
                 </fieldset>
                 <!-- ... your code here ... -->
@@ -63,14 +63,13 @@
                 <fieldset class="row">
                     <legend>Search</legend>
                     <label for="searchterm">Search term or kewords:</label><input id="searchterm" type="text" placeholder="e.g. Berlin">
-                    <label for="latitudeDis"></label><input id="latitudeDis" type="hidden" value="<%= latitude %>">
-                    <label for="longitudeDis"></label><input id="longitudeDis" type="hidden" value="<%= longitude %>">
+                    <label for="latitudeDis"></label><input id="latitudeDis" type="hidden" value="<%= lat %>">
+                    <label for="longitudeDis"></label><input id="longitudeDis" type="hidden" value="<%= lon %>">
                     <button type="submit">Search</button>
                 </fieldset>
 
             </form>
             <!-- ############### VS1Lab 1a Form 2 End -->
-
             <div class="discovery__wrapper">
                 <div class="discovery__taglist col-4">
                     <ul class="discovery__results" id="discoveryResults">
@@ -80,9 +79,8 @@
                     </ul>
                 </div>
 
-                <div class="discovery__map col-8" id="map">
-                    <img src="./images/mapview.jpg" alt="a map with locations" id="mapView" data-tags="<%= JSON.stringify(taglist) %>" />
-                    <span>Result map</span>
+                <div class="discovery__map col-8" id="map" data-tags="<%= JSON.stringify(taglist) %>">
+                    <img src="./images/mapview.jpg" alt="a map with locations" id="mapView" />
                 </div>
             </div>
         </section>
@@ -95,6 +93,8 @@
     <!-- Load JavaScripts
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./javascripts/map-manager.js"></script>
+    <script src="./javascripts/location-helper.js"></script>
     <script src="./javascripts/geotagging.js"></script>
 </body>
 
