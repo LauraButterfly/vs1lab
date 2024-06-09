@@ -30,6 +30,7 @@ const GeoTag = require('../models/geotag');
  */
 // eslint-disable-next-line no-unused-vars
 const GeoTagStore = require('../models/geotag-store');
+const geoTagStore = new GeoTagStore();
 
 /**
  * Route '/' for HTTP 'GET' requests.
@@ -61,6 +62,15 @@ router.get('/', (req, res) => {
  */
 
 // TODO: ... your code here ...
+router.post('/tagging', (req, res) => {
+  const { name, latitude, longitude, hashtag } = req.body;
+  geoTagStore.addGeoTag(name, parseFloat(latitude), parseFloat(longitude), hashtag);
+  
+  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
+  res.render('index', { taglist: nearbyGeoTags });
+  
+
+})
 
 /**
  * Route '/discovery' for HTTP 'POST' requests.
@@ -79,5 +89,20 @@ router.get('/', (req, res) => {
  */
 
 // TODO: ... your code here ...
+router.post('/discovery', (req, res) => {
+
+  const { latitude, longitude, searchterm } = req.body;
+
+  let nearbyGeoTags;
+  if (searchterm) {
+    nearbyGeoTags = geoTagStore.searchNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), searchterm, 100); 
+  } else {
+    nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
+  }
+
+  res.render('index', { taglist: nearbyGeoTags });
+
+
+})
 
 module.exports = router;

@@ -26,6 +26,49 @@
 class InMemoryGeoTagStore{
 
     // TODO: ... your code here ...
+    #geoTags = [];
+
+    addGeoTag(name, latitude, longitude, hashtag){
+        this.#geoTags.push(new GeoTag(name, latitude, longitude, hashtag));
+    }
+
+    removeGeoTag(name) {
+        this.#geoTags = this.#geoTags.filter(tag => tag.name !== name);
+    }
+
+    getNearbyGeoTags(latitude, longitude, radius) {
+        return this.#geoTags.filter(tag => {
+            const distance = this._calculateDistance(latitude, longitude, tag.latitude, tag.longitude);
+            return distance <= radius;
+        });
+    }
+
+    
+
+    searchNearbyGeoTags(latitude, longitude, keyword, radius) {
+
+        const nerabyTags = this.getNearbyGeoTags(latitude, longitude, radius);
+        const matchingTags = nerabyTags.filter(tag => {
+            const nameMatches = tag.name.toLowerCase().includes(keyword.toLowerCase());
+            const hashtagMatches = tag.hashtag.toLowerCase().includes(keyword.toLowerCase());
+            return nameMatches || hashtagMatches;
+        })
+
+        return matchingTags;
+
+    }
+
+    _calculateDistance(lat1, lon1, lat2, lon2) {
+        const dLat = this._deg2rad(lat2 - lat1);  //Berechnung mit Harversine-Formel https://www.kompf.de/gps/distcalc.html
+        const dLon = this._deg2rad(lon2 - lon1);
+        const a = Math.pow(Math.sin(dLat / 2.0), 2) + Math.pow(Math.sin(dLon / 2.0), 2) * Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2));
+        const dist = 6378.388 * 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+        return dist;
+    }
+
+    _deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
 
 }
 

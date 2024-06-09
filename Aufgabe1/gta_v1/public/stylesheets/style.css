@@ -48,6 +48,15 @@ a {
 /* ... your code here ... */
 
 
+.header__image {
+  width: max(50px, 5vw);
+  padding: 0.4rem;
+}
+
+
+
+
+
 /* Grid styles (no changes required) */
 
 .row {
