@@ -41,7 +41,7 @@
                 <fieldset class="tagging_fieldset">
                     <legend class="tagging_legend">Add a new GeoTag</legend>
                     <label for="latInput">Latitude:</label><br>
-                    <input value="25" type="number" step="0.00000001" id="latInput" name="latitude"><br>
+                    <input value="25" type="number" step="0.00000001" id="latInput" name="latitude" ><br>
                     <label for="longInput">Longitude:</label><br>
                     <input value="50" readonly type="number" id="longInput" name="longitude"><br>
                     <label for="nameInput">Name:</label><br>
@@ -65,9 +65,9 @@
                 <fieldset class="discovery_fieldset">
                     <legend class="search_legend">Search</legend>
                     <label for="searchInput">Search term or keywords:</label><br>
-                    <input placeholder="e.g. Berlin" type="text" id="searchInput" name="keyword"><br>
-                    <input type="hidden" id="discoveryLat" name="latitude">
-                    <input type="hidden" id="discoveryLong" name="longitude">
+                    <input placeholder="e.g. Berlin" type="text" id="searchInput" name="keyword" value="<%= searchInput %>"><br>
+                    <input type="hidden" id="discoveryLat" name="latitude" >
+                    <input type="hidden" id="discoveryLong" name="longitude" >
                     <input type="submit" id="searchButton" value="Search">
                 </fieldset>
 

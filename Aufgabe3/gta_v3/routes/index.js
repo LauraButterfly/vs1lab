@@ -49,9 +49,10 @@ const geoTagStore = new InMemoryGeoTagStore();
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
   const helpingTag = new GeoTag;
-  helpingTag.latitude = 48.9374;
-  helpingTag.longitude = 8.4027;
-  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(helpingTag, 1000)})
+  //helpingTag.latitude = 48.9374;
+  //helpingTag.longitude = 8.4027;
+  // TODO: sollte eigentlich die aktuelle Location sein, der LocHelper gönnt aber nichts außer errors EDIT: brauchen wir nicht?
+  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(helpingTag, 1000), searchInput: ""})
 });
 
 /**
@@ -72,7 +73,7 @@ router.get('/', (req, res) => {
 // TODO: ... your code here ...
 router.post('/tagging', (req, res) => {
   geoTagStore.addGeoTag(req.body);
-  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(req.body, 1000)})
+  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(req.body, 1000), searchInput: ""})
 });
 
 /**
@@ -93,7 +94,7 @@ router.post('/tagging', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/discovery', (req, res) => {
-  res.render('index', { taglist: geoTagStore.searchNearbyGeoTags(req.body, 1000)})
+  res.render('index', { taglist: geoTagStore.searchNearbyGeoTags(req.body, 1000), searchInput: req.body.keyword})
 });
 
 

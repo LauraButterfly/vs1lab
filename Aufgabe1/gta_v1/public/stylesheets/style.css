@@ -24,7 +24,7 @@ html {
 /* Variables (example: see declaration for "a" below) */
 
 :root {
-  --link-color: #00B7FF;
+  --link-color: #052c14;
   --background-color: #efefef;
   --border-color: #cdcdcd;
   --gray-color: #666;
@@ -35,9 +35,8 @@ html {
 
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
+
 }
 
 a {
@@ -47,7 +46,21 @@ a {
 /* ### TODO ### Styles for other HTML elements */
 
 /* ... your code here ... */
+.header__image {
+  height: 50px;
+  width: auto;
+  padding-left: 20px;
+}
 
+.header__navigation {
+  padding-right: 20px;
+  color: black;
+}
+
+.header__navigation > a:hover{
+  background-color: rgb(68, 160, 99);
+  color: rgb(240, 240, 240) !important;
+}
 
 /* Grid styles (no changes required) */
 
@@ -106,32 +119,214 @@ a {
   width: calc(100% - 1rem);
 }
 
-
 /* ### TODO ### Styles for Header Component */
 
 /* ... your code here ... */
+.header {
+  background-color:rgb(91, 204, 128);
+  height: 100px;
+  /* display: block; */
+  align-items: center;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
 
 
 /* ### TODO ### Styles for Main Component */
 
 /* ... your code here ... */
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  list-style: none;
+}
 
+.main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0;
+  list-style: none;
+}
 
 /* ### TODO ### Styles for Tagging component */
 
-/* ... your code here ... */
+.main__tagging {
+  padding: 20px 10px 10px 10px;
+  min-width: fit-content;
+  width: 300px;
+}
+
+#tag-form > fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  min-width: 200px;
+}
+
+#tag-form > fieldset > input {
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#tag-form > fieldset > button {
+  padding: 10px;
+  margin-top: 5px;
+}
+
 
 
 /* ### TODO ### Styles for Discovery component */
 
 /* ... your code here ... */
+.main__discovery {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  max-width: fit-content;
+}
+
+.discovery__wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding-top: 40px;
+  
+}
+
+#discoveryFilterForm > fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  
+}
+
+#discoveryFilterForm > fieldset > input {
+  padding: 10px;
+}
+
+#searchterm {
+  max-width: 300px;
+}
+
+.discovery__search > fieldset > button {
+  max-width: 300px;
+  padding: 10px;
+}
+
+.discovery__taglist {
+  min-width: fit-content;
+} 
+
+.discovery__results > li {
+  border-style: solid !important;
+  border: #052c14;
+  border-width: 1px;
+  padding: 10px;
+  margin: 10px;
+  margin-right: 20px;
+  background-color:rgb(148, 224, 174);
+  align-items: left;
+  min-width: 241px;
+  color:#000000;
+  list-style-type: none;
+}
+
+.discovery__map {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
 
 
 /* ### TODO ### Styles for Footer Component */
 
-/* ... your code here ... */
+.footer {
+  background-color:rgb(91, 204, 128);
+  height: 80px;
+  /* text-align: left; */
+  position: absolute;
+  display: flex;
+  padding-left: 20px;
+  justify-content: left;
+  align-items: center;
+  bottom: 0;
+  width: 100%;
+}
+
+/* .footer > span {
+  padding-left: 20px;
+  position: absolute;
+  bottom: 50%;
+} */
+
 
 
 /* ### TODO ### Media Queries */
+@media screen and (max-width: 1000px) {
+  .discovery__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+  }
+}
 
-/* ... your code here ... */
+@media screen and (max-width: 850px) {
+  .main {
+    flex-direction: column;
+    /* width: 100% !important; */
+    align-items: center; 
+    
+  }
+
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .main__tagging {
+    max-width: 300px;
+  } 
+
+  .main__discovery {
+    max-width: fit-content;
+  }
+
+  .discovery__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #tag-form > fieldset > input {
+    max-width: 300px;
+  }
+  #tag-form > fieldset > button {
+    max-width: 300px;
+  }
+
+  .discovery__map > img {
+    padding-top: 20px;
+  }
+
+  .discovery__map > span {
+    padding-bottom: 100px;
+  }
+  
+  .col-3 {
+    width: calc(100% - 1rem);
+  }
+
+  .col-9 {
+    width: calc(100% - 1rem);
+  }
+
+}
