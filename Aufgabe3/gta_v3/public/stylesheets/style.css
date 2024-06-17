@@ -275,12 +275,19 @@ a {
   background-color:rgb(91, 204, 128);
   height: 80px;
   /* text-align: left; */
-  position: absolute;
+  /*position: absolute; */
   display: flex;
   padding-left: 20px;
   justify-content: left;
   align-items: center;
   bottom: 0;
+  width: 100%;
+  z-index: 1000;
+
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
   width: 100%;
 }
 
@@ -298,6 +305,13 @@ a {
     display: flex;
     flex-direction: column;
     align-items: baseline;
+  }
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    width: 100%;
   }
 }
 

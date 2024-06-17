@@ -98,7 +98,7 @@ router.post('/discovery', (req, res) => {
     nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
   }
 
-  res.render('index', { taglist: nearbyGeoTags, lat: latitude, lon: longitude  });
+  res.render('index', { taglist: nearbyGeoTags, lat: latitude, lon: longitude });
 })
 
 module.exports = router;
