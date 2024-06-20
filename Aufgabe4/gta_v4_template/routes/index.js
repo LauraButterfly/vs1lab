@@ -12,21 +12,23 @@
 
 const express = require('express');
 const router = express.Router();
-
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 /**
  * The module "geotag" exports a class GeoTagStore. 
  * It represents geotags.
  */
 // eslint-disable-next-line no-unused-vars
 const GeoTag = require('../models/geotag');
-
+const LocationHelper = require('../public/javascripts/location-helper')
 /**
  * The module "geotag-store" exports a class GeoTagStore. 
  * It provides an in-memory store for geotag objects.
  */
 // eslint-disable-next-line no-unused-vars
-const GeoTagStore = require('../models/geotag-store');
-
+/*const GeoTagStore = require('../models/geotag-store');*/
+const InMemoryGeoTagStore = require('../models/geotag-store');
+const geoTagStore = new InMemoryGeoTagStore();
 // App routes (A3)
 
 /**
@@ -39,9 +41,21 @@ const GeoTagStore = require('../models/geotag-store');
  */
 
 router.get('/', (req, res) => {
-  res.render('index', { taglist: [] })
+  const helpingTag = new GeoTag;
+  //helpingTag.latitude = 48.9374;
+  //helpingTag.longitude = 8.4027;
+  // TODO: sollte eigentlich die aktuelle Location sein, der LocHelper gönnt aber nichts außer errors EDIT: brauchen wir nicht?
+  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(helpingTag, 1000), searchInput: ""})
 });
 
+router.post('/tagging', (req, res) => {
+  geoTagStore.addGeoTag(req.body);
+  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(req.body, 1000), searchInput: ""})
+});
+
+router.post('/discovery', (req, res) => {
+  res.render('index', { taglist: geoTagStore.searchNearbyGeoTags(req.body, 1000), searchInput: req.body.keyword})
+});
 // API routes (A4)
 
 /**
@@ -115,5 +129,5 @@ router.get('/', (req, res) => {
  */
 
 // TODO: ... your code here ...
-
+module.exports = geoTagStore;
 module.exports = router;
