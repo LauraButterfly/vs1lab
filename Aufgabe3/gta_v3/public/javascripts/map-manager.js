@@ -1,8 +1,28 @@
-class MapManager {
+// File origin: VS1LAB A2 
+
+/**
+ * from VS1LAB A3
+ * 
+ * A class to help using the Leaflet map service.
+ */
+ // eslint-disable-next-line no-unused-vars
+ class MapManager {
 
     #map
+    #defaultIcon
     #markers
-
+    constructor() {
+        // Default Icon of Leaflet can not be loaded in our environment, so it  was manually added to the repo
+        this.#defaultIcon = L.icon({
+           iconUrl: '/images/marker.svg',
+           shadowUrl: '/images/marker-shadow.svg',
+           iconSize: [25, 41],
+           iconAnchor: [12, 41],
+           popupAnchor: [1, -34],
+           shadowSize: [41, 41]
+        });
+    }
+    
     /**
     * Initialize a Leaflet map
     * @param {number} latitude The map center latitude
@@ -15,8 +35,7 @@ class MapManager {
         var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer(
             'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; ' + mapLink + ' Contributors'
-        }).addTo(this.#map);
+            attribution: '&copy; ' + mapLink + ' Contributors'}).addTo(this.#map);
         this.#markers = L.layerGroup().addTo(this.#map);
     }
 
@@ -29,13 +48,13 @@ class MapManager {
     updateMarkers(latitude, longitude, tags = []) {
         // delete all markers
         this.#markers.clearLayers();
-        L.marker([latitude, longitude])
+        L.marker([latitude, longitude], { icon: this.#defaultIcon })
             .bindPopup("Your Location")
             .addTo(this.#markers);
         for (const tag of tags) {
-            L.marker([tag.latitude, tag.longitude])
+            L.marker([tag.location.latitude,tag.location.longitude], { icon: this.#defaultIcon })
                 .bindPopup(tag.name)
-                .addTo(this.#markers);
+                .addTo(this.#markers);  
         }
     }
 }

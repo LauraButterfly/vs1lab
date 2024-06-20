@@ -25,6 +25,7 @@ html {
 
 :root {
   --link-color: #052c14;
+  --link-color: #052c14;
   --background-color: #efefef;
   --border-color: #cdcdcd;
   --gray-color: #666;
@@ -36,6 +37,7 @@ html {
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   min-height: 100vh;
+
 
 }
 
@@ -162,6 +164,20 @@ a {
   margin: 0;
   list-style: none;
 }
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  list-style: none;
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0;
+  list-style: none;
+}
 
 /* ### TODO ### Styles for Tagging component */
 
@@ -272,6 +288,25 @@ a {
 
 
 /* ### TODO ### Styles for Footer Component */
+
+.footer {
+  background-color:rgb(91, 204, 128);
+  height: 80px;
+  /* text-align: left; */
+  position: absolute;
+  display: flex;
+  padding-left: 20px;
+  justify-content: left;
+  align-items: center;
+  bottom: 0;
+  width: 100%;
+}
+
+/* .footer > span {
+  padding-left: 20px;
+  position: absolute;
+  bottom: 50%;
+} */
 
 .footer {
   background-color:rgb(91, 204, 128);

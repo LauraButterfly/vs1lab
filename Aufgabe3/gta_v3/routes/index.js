@@ -11,8 +11,10 @@
  */
 
 const express = require('express');
+const app = express();
 const router = express.Router();
-
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 /**
  * The module "geotag" exports a class GeoTagStore. 
  * It represents geotags.
@@ -21,6 +23,7 @@ const router = express.Router();
  */
 // eslint-disable-next-line no-unused-vars
 const GeoTag = require('../models/geotag');
+const LocationHelper = require('../public/javascripts/location-helper')
 
 /**
  * The module "geotag-store" exports a class GeoTagStore. 
@@ -29,8 +32,10 @@ const GeoTag = require('../models/geotag');
  * TODO: implement the module in the file "../models/geotag-store.js"
  */
 // eslint-disable-next-line no-unused-vars
-const GeoTagStore = require('../models/geotag-store');
-const geoTagStore = new GeoTagStore();
+const InMemoryGeoTagStore = require('../models/geotag-store');
+const geoTagStore = new InMemoryGeoTagStore();
+
+
 
 /**
  * Route '/' for HTTP 'GET' requests.
@@ -43,7 +48,11 @@ const geoTagStore = new GeoTagStore();
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-  res.render('index', { taglist: geoTagStore.getTags(), lat: "", lon: "" })
+  const helpingTag = new GeoTag;
+  //helpingTag.latitude = 48.9374;
+  //helpingTag.longitude = 8.4027;
+  // TODO: sollte eigentlich die aktuelle Location sein, der LocHelper gönnt aber nichts außer errors EDIT: brauchen wir nicht?
+  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(helpingTag, 1000), searchInput: ""})
 });
 
 /**
@@ -63,12 +72,9 @@ router.get('/', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/tagging', (req, res) => {
-  const { name, latitude, longitude, hashtag } = req.body;
-  geoTagStore.addGeoTag(name, parseFloat(latitude), parseFloat(longitude), hashtag);
-  
-  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
-  res.render('index', { taglist: nearbyGeoTags, lat: latitude, lon: longitude });
-})
+  geoTagStore.addGeoTag(req.body);
+  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(req.body, 1000), searchInput: ""})
+});
 
 /**
  * Route '/discovery' for HTTP 'POST' requests.
@@ -88,17 +94,9 @@ router.post('/tagging', (req, res) => {
 
 // TODO: ... your code here ...
 router.post('/discovery', (req, res) => {
+  res.render('index', { taglist: geoTagStore.searchNearbyGeoTags(req.body, 1000), searchInput: req.body.keyword})
+});
 
-  const { latitude, longitude, searchterm } = req.body;
 
-  let nearbyGeoTags;
-  if (searchterm) {
-    nearbyGeoTags = geoTagStore.searchNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), searchterm, 100); 
-  } else {
-    nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), 100); 
-  }
-
-  res.render('index', { taglist: nearbyGeoTags, lat: latitude, lon: longitude });
-})
-
+module.exports = geoTagStore;
 module.exports = router;
