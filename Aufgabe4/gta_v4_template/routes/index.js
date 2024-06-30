@@ -60,6 +60,9 @@ router.post('/discovery', (req, res) => {
 });
 // API routes (A4)
 
+const requestCache = []
+const pageSize = 5
+
 /**
  * Route '/api/geotags' for HTTP 'GET' requests.
  * (http://expressjs.com/de/4x/api.html#app.get.method)
@@ -97,6 +100,43 @@ router.get('/api/geotags', (req, res) => {
 
 });
 
+const fillPageCache = (res, requestId, data) => {
+  // fill the cache at requestId
+  requestCache[requestId] = data
+  // return requestId and MetaData to client
+  res.json({
+    requestId,
+    itemCount: data.length,
+    pagesCount: Math.ceil(data.length/pageSize)
+  })
+}
+// copy of get(/api/geotags), but instead of returning the data, fills the cache
+// and returns requestId
+router.get('/api/geotags/paged', (req, res) => {
+  const radius = req.query.radius;
+  const searchTerm = req.query.searchTerm;
+  const latitude = req.query.latitude;
+  const longitude = req.query.longitude;
+  const geoTag = { latitude, longitude };
+
+  //create new requestId
+  const requestId = requestCache.length;
+
+  if (radius != null) {
+    fillPageCache(res, requestId, geoTagStore.getNearbyGeoTags(geoTag, radius));
+    return;
+  }
+  
+  if (searchTerm != null) {
+    fillPageCache(res, requestId, geoTagStore.getAllGeoTags().filter((tag) => {
+      return tag.name.includes(searchTerm) || tag.hashtag.includes(searchTerm);
+    }));
+    return;
+  }
+
+  fillPageCache(res, requestId, geoTagStore.getAllGeoTags());
+});
+
 /**
  * Route '/api/geotags' for HTTP 'POST' requests.
  * (http://expressjs.com/de/4x/api.html#app.post.method)
@@ -119,6 +159,18 @@ router.post('/api/geotags', (req, res) => {
   const allGeoTags = geoTagStore.getAllGeoTags();
 
   res.json(allGeoTags);
+});
+// copy of post('/api/geotags'), but instead of returning the data fills the cache
+// and returns requestId
+router.post('/api/geotags/paged', (req, res) => {
+  const name = req.body.name;
+  const latitude = req.body.latitude;
+  const longitude = req.body.longitude;
+  const hashtag = req.body.hashtag;
+  geoTagStore.addGeoTag({ name, latitude, longitude, hashtag });
+  
+  const requestId = requestCache.length;
+  fillPageCache(res, requestId, geoTagStore.getAllGeoTags());
 });
 
 /**
@@ -186,6 +238,16 @@ router.delete('/api/geotags/:id', (req, res) => {
 
 });
 
+// retrieve the data by requestId and pageIndex
+router.get('/api/paged', (req, res) => {
+  const pageIndex = +(req.query.page);
+  const requestId = req.query.requestId;
+
+  const data = requestCache[requestId]
+  const pageData = data.slice(pageIndex*pageSize, (pageIndex+1)*pageSize)
+
+  res.json(pageData);
+});
 
 
 

@@ -114,6 +114,35 @@ class MapManager {
     }
 }
 const mapManager = new MapManager();
+// this class represents the ticket to get the paged data
+class PagedRequest {
+
+    constructor(response){
+        this.currentPage = 0
+        this.pagesCount = response.pagesCount
+        this.itemCount = response.itemCount
+        this.requestId = response.requestId
+        // frontend cache
+        this.pages = {}
+    }
+
+    async getCurrent(){
+        return this.getPage(this.currentPage)
+    }
+    // if it doesn't have it already,
+    // gets page from backend cache and saves to frontend cache
+    async getPage(number){
+        if(this.pages[number] === undefined){
+            const resp = await fetch(`/api/paged?page=${number}&requestId=${this.requestId}`)
+            this.pages[number] = await resp.json()
+        }
+        return this.pages[number]
+    }
+
+    getData() {
+        return this.pages
+    }
+}
 
 /**
  * TODO: 'updateLocation'
@@ -143,11 +172,10 @@ function updateLocation() {
 }
 
 async function initTags() {
-    const resp = await fetch('/api/geotags', {
-        method: "GET",
-    })
-    const taglist = await resp.json();
-    updateDiscoveryWidget(taglist);
+    const resp = await fetch('/api/geotags/paged');
+    // gets current paged request, depending on the event 
+    currentPageRequest = new PagedRequest(await resp.json())
+    updateUIFromPagedRequest(currentPageRequest)
 }
 
 function addTag() {
@@ -158,8 +186,10 @@ function addTag() {
 
 // Wait for the page to fully load its DOM content, then call updateLocation
 document.addEventListener("DOMContentLoaded", () => {
+    // listener for moving though the pages 
+    document.getElementById("nextPage").addEventListener('click', nextPage)
+    document.getElementById("prevPage").addEventListener('click', prevPage)
     updateLocation();
-
     //event listener for tag submit
     var tagForm = document.getElementById("tag-form");
 
@@ -173,14 +203,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         e.preventDefault();
 
-        const resp = await fetch('/api/geotags', {
+        const resp = await fetch('/api/geotags/paged', {
             method: "POST",
             headers: new Headers({ 'content-type': 'application/json' }),
             body: JSON.stringify(payLoad),
         })
-
-        const taglist = await resp.json();
-        updateDiscoveryWidget(taglist);
+        // updates the current paged view after another tag has been added
+        currentPageRequest = new PagedRequest(await resp.json())
+        updateUIFromPagedRequest(currentPageRequest)
     })
 
     //event listener for tag submit
@@ -189,11 +219,12 @@ document.addEventListener("DOMContentLoaded", () => {
         var searchTerm = document.getElementById("searchInput").value;
         e.preventDefault();
 
-        const resp = await fetch('/api/geotags?searchTerm=' + searchTerm, {
+        const resp = await fetch('/api/geotags/paged?searchTerm=' + searchTerm, {
             method: "GET",
         })
-        const taglist = await resp.json();
-        updateDiscoveryWidget(taglist);
+        // updates the current paged view after the items have been filtered via search
+        currentPageRequest = new PagedRequest(await resp.json())
+        updateUIFromPagedRequest(currentPageRequest)
     })
 
 });
@@ -217,4 +248,40 @@ function updateDiscoveryMap(taglist) {
 function removeElement(id) {
     var elem = document.getElementById(id);
     return elem.parentNode.removeChild(elem);
+}
+
+let currentPageRequest = null
+// update ui elements like the buttons and the discovery widget with page data
+async function updateUIFromPagedRequest(pagedRequest) {
+    const pageInfo = document.getElementById("pageInfo")
+    pageInfo.innerText = `${pagedRequest.currentPage+1}/${pagedRequest.pagesCount} (${pagedRequest.itemCount})`
+    updateDiscoveryWidget(await pagedRequest.getCurrent())
+    setEnabledForNav(currentPageRequest.currentPage, currentPageRequest.pagesCount-1)
+}
+// functions to navigate to next or previous page, 
+// in or decreases current pageindex
+function nextPage(){
+    if(currentPageRequest == null) return;
+    currentPageRequest.currentPage = Math.min(currentPageRequest.currentPage + 1, currentPageRequest.pagesCount - 1)
+    updateUIFromPagedRequest(currentPageRequest)
+}
+
+function prevPage(){
+    if(currentPageRequest == null) return;
+    currentPageRequest.currentPage = Math.max(currentPageRequest.currentPage - 1, 0)
+    updateUIFromPagedRequest(currentPageRequest)
+}
+// enable or disable depending on current pageIndex
+function setEnabledForNav(curr, maxIndex) {
+    if(curr + 1 > maxIndex){
+        document.getElementById("nextPage").setAttribute("disabled", "disabled");
+    }else{
+        document.getElementById("nextPage").removeAttribute("disabled");
+    }
+
+    if(curr - 1 < 0){
+        document.getElementById("prevPage").setAttribute("disabled", "disabled");
+    }else{
+        document.getElementById("prevPage").removeAttribute("disabled");
+    }
 }

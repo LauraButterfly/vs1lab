@@ -257,6 +257,10 @@ a {
   list-style-type: none;
 }
 
+.discovery__results {
+  height: 250px;
+}
+
 .discovery__map {
   display: flex;
   flex-direction: column;
@@ -290,35 +294,18 @@ a {
   width: 100%;
 }
 /* ### TODO ### Pagination */
+#paginatonButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+} 
 
-.pagination {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.pagination button {
-  padding: 5px 10px;
-  margin: 0 5px;
-  cursor: pointer;
-  outline: 1px solid #494a4f;
-  border-radius: 1px;
-  border: none;
-}
-
-.hidden {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
-
-.pagination button.active {
-  background-color: #007bff;
-  color: white;
-}
+#paginatonButtons > button{
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+} 
 
 /* ### TODO ### Media Queries */
 @media screen and (max-width: 1000px) {
