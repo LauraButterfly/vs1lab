@@ -36,12 +36,17 @@ class InMemoryGeoTagStore{
         console.log(this.#allAvailableGeoTags)
     }
 
+    getAllGeoTags() {
+        return [...this.#allAvailableGeoTags]; 
+    }
+
     addGeoTag(geoTag){
         console.log("HIER", geoTag)
         this.#allAvailableGeoTags.push(geoTag);
     }
 
     removeGeoTag(name){
+        console.log(this.#allAvailableGeoTags);
         this.#allAvailableGeoTags = this.#allAvailableGeoTags.filter(tag => tag.name !== name);
     }
 
@@ -50,7 +55,6 @@ class InMemoryGeoTagStore{
         console.log("GeoTag:", geoTag);
         return this.#allAvailableGeoTags.filter(tag => {
             const distance = this._calculateDistance(geoTag.latitude, geoTag.longitude, tag.latitude, tag.longitude);
-            console.log("Distance:", distance);
             return distance <= radius;
         });
     }

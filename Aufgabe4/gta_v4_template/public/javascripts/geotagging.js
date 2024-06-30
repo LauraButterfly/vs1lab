@@ -31,15 +31,15 @@ class LocationHelper {
         return this.#longitude;
     }
 
-   /**
-    * Create LocationHelper instance if coordinates are known.
-    * @param {string} latitude 
-    * @param {string} longitude 
-    */
-   constructor(latitude, longitude) {
-       this.#latitude = (parseFloat(latitude)).toFixed(5);
-       this.#longitude = (parseFloat(longitude)).toFixed(5);
-   }
+    /**
+     * Create LocationHelper instance if coordinates are known.
+     * @param {string} latitude 
+     * @param {string} longitude 
+     */
+    constructor(latitude, longitude) {
+        this.#latitude = (parseFloat(latitude)).toFixed(5);
+        this.#longitude = (parseFloat(longitude)).toFixed(5);
+    }
 
     /**
      * The 'findLocation' method requests the current location details through the geolocation API.
@@ -64,7 +64,7 @@ class LocationHelper {
             // Pass the locationHelper object to the callback.
             callback(helper);
         }, (error) => {
-           alert(error.message)
+            alert(error.message)
         });
     }
 }
@@ -89,7 +89,8 @@ class MapManager {
         var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer(
             'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; ' + mapLink + ' Contributors'}).addTo(this.#map);
+            attribution: '&copy; ' + mapLink + ' Contributors'
+        }).addTo(this.#map);
         this.#markers = L.layerGroup().addTo(this.#map);
     }
 
@@ -106,12 +107,13 @@ class MapManager {
             .bindPopup("Your Location")
             .addTo(this.#markers);
         for (const tag of tags) {
-            L.marker([tag.latitude,tag.longitude])
+            L.marker([tag.latitude, tag.longitude])
                 .bindPopup(tag.name)
-                .addTo(this.#markers);  
+                .addTo(this.#markers);
         }
     }
 }
+const mapManager = new MapManager();
 
 /**
  * TODO: 'updateLocation'
@@ -119,35 +121,98 @@ class MapManager {
  * It is called once the page has been fully loaded.
  */
 // ... your code here ...
-function updateLocation(){
+function updateLocation() {
     LocationHelper.findLocation((helper) => {
-       const latField= document.getElementById("latInput");
-       latField.value = helper.latitude;
-       const longField= document.getElementById("longInput");
-       longField.value = helper.longitude;
-       const discoveryLong= document.getElementById("discoveryLong");
-       discoveryLong.value = helper.longitude;
-       const discoveryLat= document.getElementById("discoveryLat");
-       discoveryLat.value = helper.latitude;
-       const mapManager = new MapManager();
-       const tags = JSON.parse(document.getElementById("map").dataset.tags);
-       mapManager.initMap(helper.latitude, helper.longitude);
-       console.log("Tags:", tags)
-       mapManager.updateMarkers(helper.latitude, helper.longitude, tags);
-       removeElement("mapText");
-       removeElement("mapView");
+        const latField = document.getElementById("latInput");
+        latField.value = helper.latitude;
+        const longField = document.getElementById("longInput");
+        longField.value = helper.longitude;
+        const discoveryLong = document.getElementById("discoveryLong");
+        discoveryLong.value = helper.longitude;
+        const discoveryLat = document.getElementById("discoveryLat");
+        discoveryLat.value = helper.latitude;
+        const tags = JSON.parse(document.getElementById("map").dataset.tags);
+        mapManager.initMap(helper.latitude, helper.longitude);
+        console.log("Tags:", tags)
+        mapManager.updateMarkers(helper.latitude, helper.longitude, tags);
+        removeElement("mapText");
+        removeElement("mapView");
+
+        initTags()
     });
 }
 
-function addTag(){
+async function initTags() {
+    const resp = await fetch('/api/geotags', {
+        method: "GET",
+    })
+    const taglist = await resp.json();
+    updateDiscoveryWidget(taglist);
+}
+
+function addTag() {
     console.log("Hey")
 }
 
+// frontend pagination 
 
 // Wait for the page to fully load its DOM content, then call updateLocation
 document.addEventListener("DOMContentLoaded", () => {
-   updateLocation();
+    updateLocation();
+
+    //event listener for tag submit
+    var tagForm = document.getElementById("tag-form");
+
+
+    tagForm.addEventListener("submit", async (e) => {
+        var payLoad = {
+            name: document.getElementById("nameInput").value,
+            latitude: document.getElementById("latInput").value,
+            longitude: document.getElementById("longInput").value,
+            hashtag: document.getElementById("hashInput").value,
+        }
+        e.preventDefault();
+
+        const resp = await fetch('/api/geotags', {
+            method: "POST",
+            headers: new Headers({ 'content-type': 'application/json' }),
+            body: JSON.stringify(payLoad),
+        })
+
+        const taglist = await resp.json();
+        updateDiscoveryWidget(taglist);
+    })
+
+    //event listener for tag submit
+    var discoveryForm = document.getElementById("discoveryFilterForm");
+    discoveryForm.addEventListener("submit", async (e) => {
+        var searchTerm = document.getElementById("searchInput").value;
+        e.preventDefault();
+
+        const resp = await fetch('/api/geotags?searchTerm=' + searchTerm, {
+            method: "GET",
+        })
+        const taglist = await resp.json();
+        updateDiscoveryWidget(taglist);
+    })
+
 });
+
+function updateDiscoveryResults(taglist) {
+    var tagListElement = document.getElementById("discoveryResults");
+    tagListElement.innerHTML = taglist.map(gtag => `<li>${gtag.name} (${gtag.latitude}, ${gtag.longitude}) ${gtag.hashtag}</li>`).join("");
+}
+
+function updateDiscoveryWidget(taglist) {
+    updateDiscoveryMap(taglist);
+    updateDiscoveryResults(taglist);
+}
+
+function updateDiscoveryMap(taglist) {
+    var latitude = document.getElementById("latInput").value;
+    var longitude = document.getElementById("longInput").value;
+    mapManager.updateMarkers(latitude, longitude, taglist);
+}
 
 function removeElement(id) {
     var elem = document.getElementById(id);

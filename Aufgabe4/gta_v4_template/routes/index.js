@@ -11,6 +11,7 @@
  */
 
 const express = require('express');
+const app = express();
 const router = express.Router();
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -28,6 +29,7 @@ const LocationHelper = require('../public/javascripts/location-helper')
 // eslint-disable-next-line no-unused-vars
 /*const GeoTagStore = require('../models/geotag-store');*/
 const InMemoryGeoTagStore = require('../models/geotag-store');
+const { tagList } = require('../models/geotag-examples');
 const geoTagStore = new InMemoryGeoTagStore();
 // App routes (A3)
 
@@ -45,16 +47,16 @@ router.get('/', (req, res) => {
   //helpingTag.latitude = 48.9374;
   //helpingTag.longitude = 8.4027;
   // TODO: sollte eigentlich die aktuelle Location sein, der LocHelper gönnt aber nichts außer errors EDIT: brauchen wir nicht?
-  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(helpingTag, 1000), searchInput: ""})
+  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(helpingTag, 1000), searchInput: "" })
 });
 
 router.post('/tagging', (req, res) => {
   geoTagStore.addGeoTag(req.body);
-  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(req.body, 1000), searchInput: ""})
+  res.render('index', { taglist: geoTagStore.getNearbyGeoTags(req.body, 1000), searchInput: "" })
 });
 
 router.post('/discovery', (req, res) => {
-  res.render('index', { taglist: geoTagStore.searchNearbyGeoTags(req.body, 1000), searchInput: req.body.keyword})
+  res.render('index', { taglist: geoTagStore.searchNearbyGeoTags(req.body, 1000), searchInput: req.body.keyword })
 });
 // API routes (A4)
 
@@ -72,6 +74,28 @@ router.post('/discovery', (req, res) => {
 
 // TODO: ... your code here ...
 
+router.get('/api/geotags', (req, res) => {
+  const radius = req.query.radius;
+  const searchTerm = req.query.searchTerm;
+  const latitude = req.query.latitude;
+  const longitude = req.query.longitude;
+  const geoTag = { latitude, longitude };
+
+  if (radius != null) {
+    res.json(geoTagStore.getNearbyGeoTags(geoTag, radius));
+    return;
+  }
+  // TODO: filter for searchterm
+  if (searchTerm != null) {
+    res.json(geoTagStore.getAllGeoTags().filter((tag) => {
+      return tag.name.includes(searchTerm) || tag.hashtag.includes(searchTerm);
+    }));
+    return;
+  }
+
+  res.json(geoTagStore.getAllGeoTags());
+
+});
 
 /**
  * Route '/api/geotags' for HTTP 'POST' requests.
@@ -86,6 +110,16 @@ router.post('/discovery', (req, res) => {
 
 // TODO: ... your code here ...
 
+router.post('/api/geotags', (req, res) => {
+  const name = req.body.name;
+  const latitude = req.body.latitude;
+  const longitude = req.body.longitude;
+  const hashtag = req.body.hashtag;
+  geoTagStore.addGeoTag({ name, latitude, longitude, hashtag });
+  const allGeoTags = geoTagStore.getAllGeoTags();
+
+  res.json(allGeoTags);
+});
 
 /**
  * Route '/api/geotags/:id' for HTTP 'GET' requests.
@@ -99,6 +133,12 @@ router.post('/discovery', (req, res) => {
 
 // TODO: ... your code here ...
 
+router.get('/api/geotags/:id', (req, res) => {
+  const geoTagId = req.params.id;
+  res.json(geoTagStore.getAllGeoTags().find((tag) => {
+    return tag.name.includes(geoTagId);
+  }));
+});
 
 /**
  * Route '/api/geotags/:id' for HTTP 'PUT' requests.
@@ -115,7 +155,14 @@ router.post('/discovery', (req, res) => {
  */
 
 // TODO: ... your code here ...
+router.put('/api/geotags/:id', (req, res) => {
+    const geoTagId = req.params.id;
+    const geoTag = req.body;
+    geoTagStore.removeGeoTag(geoTagId);
+    geoTagStore.addGeoTag(geoTag);
 
+    res.json(geoTag);
+});
 
 /**
  * Route '/api/geotags/:id' for HTTP 'DELETE' requests.
@@ -129,5 +176,18 @@ router.post('/discovery', (req, res) => {
  */
 
 // TODO: ... your code here ...
+router.delete('/api/geotags/:id', (req, res) => {
+  const geoTagId = req.params.id;
+  const geoTag = geoTagStore.getAllGeoTags().find((tag) => {
+    return tag.name.includes(geoTagId);
+  });
+  geoTagStore.removeGeoTag(geoTagId);
+  res.json(geoTag);
+
+});
+
+
+
+
 module.exports = geoTagStore;
 module.exports = router;
